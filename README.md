@@ -4,6 +4,9 @@
 
 file system monitor plugin for [heimdalljs](https://github.com/heimdalljs/heimdalljs-lib)
 
+> [!Note]
+> This has been forked from the archived repo https://github.com/heimdalljs/heimdall-fs-monitor to fix an issue with Node 24
+
 
 ## Installation
 
