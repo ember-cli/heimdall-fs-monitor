@@ -41,6 +41,6 @@ jobs:
       - name: Install Yarn Classic
         run: npm install -g yarn@1
       - name: Install dependencies
-        run: yarn install --frozen-lockfile
+        run: yarn install --frozen-lockfile --ignore-engines
       - name: Run tests
         run: yarn test
