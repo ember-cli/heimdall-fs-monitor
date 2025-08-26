@@ -2,21 +2,17 @@
   "solution": {
     "heimdalljs-fs-monitor": {
       "impact": "patch",
-      "oldVersion": "1.1.0",
-      "newVersion": "1.1.1",
+      "oldVersion": "1.1.1",
+      "newVersion": "1.1.2",
       "tagName": "latest",
       "constraints": [
         {
           "impact": "patch",
           "reason": "Appears in changelog section :bug: Bug Fix"
-        },
-        {
-          "impact": "patch",
-          "reason": "Appears in changelog section :house: Internal"
         }
       ],
       "pkgJSONPath": "./package.json"
     }
   },
-  "description": "## Release (2025-08-26)\n\n* heimdalljs-fs-monitor 1.1.1 (patch)\n\n#### :bug: Bug Fix\n* `heimdalljs-fs-monitor`\n  * [#6](https://github.com/ember-cli/heimdall-fs-monitor/pull/6) Skip getter-only properties so Node 24.6 doesn't freak out ([@pichfl](https://github.com/pichfl))\n\n#### :house: Internal\n* `heimdalljs-fs-monitor`\n  * [#7](https://github.com/ember-cli/heimdall-fs-monitor/pull/7) add --ignore-engines to yarn install ([@mansona](https://github.com/mansona))\n  * [#2](https://github.com/ember-cli/heimdall-fs-monitor/pull/2) Increase support matrix for CI runs ([@pichfl](https://github.com/pichfl))\n  * [#5](https://github.com/ember-cli/heimdall-fs-monitor/pull/5) update repo ([@mansona](https://github.com/mansona))\n  * [#3](https://github.com/ember-cli/heimdall-fs-monitor/pull/3) start using release plan ([@mansona](https://github.com/mansona))\n  * [#1](https://github.com/ember-cli/heimdall-fs-monitor/pull/1) Replace travis with GitHub actions ([@pichfl](https://github.com/pichfl))\n\n#### Committers: 2\n- Chris Manson ([@mansona](https://github.com/mansona))\n- Florian Pichler ([@pichfl](https://github.com/pichfl))\n"
+  "description": "## Release (2025-08-26)\n\n* heimdalljs-fs-monitor 1.1.2 (patch)\n\n#### :bug: Bug Fix\n* `heimdalljs-fs-monitor`\n  * [#8](https://github.com/ember-cli/heimdall-fs-monitor/pull/8) Release Unreleased version ([@mansona](https://github.com/mansona))\n\n#### Committers: 1\n- Chris Manson ([@mansona](https://github.com/mansona))\n"
 }

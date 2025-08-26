@@ -2,6 +2,17 @@
 
 ## Release (2025-08-26)
 
+* heimdalljs-fs-monitor 1.1.2 (patch)
+
+#### :bug: Bug Fix
+* `heimdalljs-fs-monitor`
+  * [#8](https://github.com/ember-cli/heimdall-fs-monitor/pull/8) Release Unreleased version ([@mansona](https://github.com/mansona))
+
+#### Committers: 1
+- Chris Manson ([@mansona](https://github.com/mansona))
+
+## Release (2025-08-26)
+
 * heimdalljs-fs-monitor 1.1.1 (patch)
 
 #### :bug: Bug Fix
