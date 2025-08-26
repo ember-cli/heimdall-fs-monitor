@@ -78,65 +78,75 @@ class FSMonitor {
     let monitor = this;
 
     for (let member in fs) {
-      if (this.blacklist.indexOf(member) === -1) {
-        let old = fs[member];
-        if (typeof old === 'function') {
-          fs[member] = (function(old, member) {
-            return function() {
-              if (monitor.shouldMeasure()) {
-                let args = new Array(arguments.length);
-                for (let i = 0; i < arguments.length; i++) {
-                  args[i] = arguments[i];
-                }
+      if (this.blacklist.indexOf(member) > -1) {
+        continue;
+      }
 
-                let location;
+      const descriptor = Object.getOwnPropertyDescriptor(fs, member);
 
-                if(monitor.captureTracing) {
-                  try {
-                    /*
-                      Uses error to build a stack of where the fs call was coming from.
+      if (descriptor && descriptor.get && !descriptor.set) {
+        // Skip getter-only properties (like Utf8Stream, F_OK, etc. in Node.js 24+)
+        continue;
+      }
 
-                      An example output of what this will look like is
+      let old = fs[member];
 
-                      {
-                        fileName: '~/heimdall-fs-monitor/tests.js',
-                        lineNumber: 87,
-                        stackTrace: '    at Object.readFileSync (~/heimdall-fs-monitor/index.js:115:35)\n' +
-                          '    at Context.<anonymous> (~/heimdall-fs-monitor/tests.js:87:8)\n' +
-                          '    at callFn (~/heimdall-fs-monitor/node_modules/mocha/lib/runnable.js:383:21)\n' +
-                          '    at Test.Runnable.run (~/heimdall-fs-monitor/node_modules/mocha/lib/runnable.js:375:7)\n' +
-                          '    at Runner.runTest (~/heimdall-fs-monitor/node_modules/mocha/lib/runner.js:446:10)\n' +
-                          '    at ~/heimdall-fs-monitor/node_modules/mocha/lib/runner.js:564:12\n' +
-                          '    at next (~/heimdall-fs-monitor/node_modules/mocha/lib/runner.js:360:14)\n' +
-                          '    at ~/heimdall-fs-monitor/node_modules/mocha/lib/runner.js:370:7\n' +
-                          '    at next (~/heimdall-fs-monitor/node_modules/mocha/lib/runner.js:294:14)\n' +
-                          '    at Immediate._onImmediate (~/heimdall-fs-monitor/node_modules/mocha/lib/runner.js:338:5)'
-                      }
-                     */
-                    const error = new Error();
-                    const calls = callsites();
-
-                    location = {
-                      fileName: calls[1].getFileName(),
-                      lineNumber: calls[1].getLineNumber(),
-                      stackTrace: cleanStack(extractStack(error), { pretty: true }),
-                    }
-                  } catch(ex) {
-                    debug(`could not generate stack because: ${ex.message}`)
-                  }
-                }
-
-                return monitor._measure(member, old, fs, args, location);
-              } else {
-                return old.apply(fs, arguments);
+      if (typeof old === 'function') {
+        fs[member] = (function(old, member) {
+          return function() {
+            if (monitor.shouldMeasure()) {
+              let args = new Array(arguments.length);
+              for (let i = 0; i < arguments.length; i++) {
+                args[i] = arguments[i];
               }
-            };
-          }(old, member));
 
-          fs[member].__restore = function() {
-            fs[member] = old;
+              let location;
+
+              if(monitor.captureTracing) {
+                try {
+                  /*
+                    Uses error to build a stack of where the fs call was coming from.
+
+                    An example output of what this will look like is
+
+                    {
+                      fileName: '~/heimdall-fs-monitor/tests.js',
+                      lineNumber: 87,
+                      stackTrace: '    at Object.readFileSync (~/heimdall-fs-monitor/index.js:115:35)\n' +
+                        '    at Context.<anonymous> (~/heimdall-fs-monitor/tests.js:87:8)\n' +
+                        '    at callFn (~/heimdall-fs-monitor/node_modules/mocha/lib/runnable.js:383:21)\n' +
+                        '    at Test.Runnable.run (~/heimdall-fs-monitor/node_modules/mocha/lib/runnable.js:375:7)\n' +
+                        '    at Runner.runTest (~/heimdall-fs-monitor/node_modules/mocha/lib/runner.js:446:10)\n' +
+                        '    at ~/heimdall-fs-monitor/node_modules/mocha/lib/runner.js:564:12\n' +
+                        '    at next (~/heimdall-fs-monitor/node_modules/mocha/lib/runner.js:360:14)\n' +
+                        '    at ~/heimdall-fs-monitor/node_modules/mocha/lib/runner.js:370:7\n' +
+                        '    at next (~/heimdall-fs-monitor/node_modules/mocha/lib/runner.js:294:14)\n' +
+                        '    at Immediate._onImmediate (~/heimdall-fs-monitor/node_modules/mocha/lib/runner.js:338:5)'
+                    }
+                    */
+                  const error = new Error();
+                  const calls = callsites();
+
+                  location = {
+                    fileName: calls[1].getFileName(),
+                    lineNumber: calls[1].getLineNumber(),
+                    stackTrace: cleanStack(extractStack(error), { pretty: true }),
+                  }
+                } catch(ex) {
+                  debug(`could not generate stack because: ${ex.message}`)
+                }
+              }
+
+              return monitor._measure(member, old, fs, args, location);
+            } else {
+              return old.apply(fs, arguments);
+            }
           };
-        }
+        }(old, member));
+
+        fs[member].__restore = function() {
+          fs[member] = old;
+        };
       }
     }
   }
