@@ -82,6 +82,13 @@ class FSMonitor {
         continue;
       }
 
+      const descriptor = Object.getOwnPropertyDescriptor(fs, member);
+
+      if (descriptor && descriptor.get && !descriptor.set) {
+        // Skip getter-only properties (like Utf8Stream, F_OK, etc. in Node.js 24+)
+        continue;
+      }
+
       let old = fs[member];
 
       if (typeof old === 'function') {
